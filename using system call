@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+#define BUFSIZE 1024
+
+int main(int argc, char *argv[]) {
+    int fd;
+    char buf[BUFSIZE];
+
+    // Create the file
+    fd = open("file.txt", O_CREAT | O_WRONLY, 0644);
+    if (fd < 0) {
+        perror("open");
+        exit(EXIT_FAILURE);
+    }
+
+    // Read data from user and write to the file
+    printf("Enter some data: ");
+    if (fgets(buf, BUFSIZE, stdin) != NULL) {
+        write(fd, buf, BUFSIZE);
+    }
+
+    close(fd);
+
+    // Read the data from the file
+    fd = open("file.txt", O_RDONLY);
+    if (fd < 0) {
+        perror("open");
+        exit(EXIT_FAILURE);
+    }
+
+    read(fd, buf, BUFSIZE);
+
+    // Print the data to the console
+    printf("Data read from the file: %s", buf);
+
+    close(fd);
+
+    return 0;
+    }
+
