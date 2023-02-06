@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <stdbool.h>
+#define NUM_PARTITIONS 5
+#define KB 1024
+int memory[NUM_PARTITIONS] = {40 * KB, 10 * KB, 30 * KB, 60 * KB};
+bool allocated[NUM_PARTITIONS] = {false};
+void first_fit(int process_size) {
+    int i;
+    for (i = 0; i < NUM_PARTITIONS; i++) {
+        if (!allocated[i] && memory[i] >= process_size) {
+            allocated[i] = true;
+            printf("Process of size %d KB allocated to partition %d\n", process_size / KB, i + 1);
+            break;
+        }
+    }
+    if (i == NUM_PARTITIONS) {
+        printf("No suitable partition found for process of size %d KB\n", process_size / KB);
+    }
+}
+int main() {
+    int processes[5] = {100 * KB, 50 * KB, 30 * KB, 120 * KB, 35 * KB};
+    int num_processes = sizeof(processes) / sizeof(processes[0]);
+
+    for (int i = 0; i < num_processes; i++) {
+        first_fit(processes[i]);
+    }
+    return 0;
+}
