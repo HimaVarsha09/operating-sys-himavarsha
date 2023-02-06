@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <math.h>
+
+#define MAX_TRACKS 5
+
+int absolute_difference(int a, int b) {
+return (a > b) ? (a - b) : (b - a);
+}
+
+int main() {
+int track_position[MAX_TRACKS] = {55, 58, 60, 70, 18};
+int head = 55;
+int total_movement = 0;
+int i, j;
+
+for (i = 0; i < MAX_TRACKS; i++) {
+int min_difference = absolute_difference(head, track_position[0]);
+int min_index = 0;
+for (j = 1; j < MAX_TRACKS; j++) {
+  int difference = absolute_difference(head, track_position[j]);
+  if (difference < min_difference) {
+    min_difference = difference;
+    min_index = j;
+  }
+}
+
+total_movement += min_difference;
+head = track_position[min_index];
+
+// shift array elements left to avoid visiting the same track again
+for (j = min_index; j < MAX_TRACKS - 1; j++) {
+  track_position[j] = track_position[j + 1];
+}
+}
+
+printf("Average head movement: %f\n", (float)total_movement / MAX_TRACKS);
+
+return 0;
+}
