@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_TRACKS 200
+#define NUM_REQUESTS 9
+
+int tracks[NUM_REQUESTS] = {55, 58, 60, 70, 18, 90, 150, 160, 184};
+
+int compare(const void *a, const void *b) {
+    return (*(int*)a - *(int*)b);
+}
+
+int main() {
+    int head = 55;
+    int total_movement = 0;
+
+    printf("Track Position: ");
+    for (int i = 0; i < NUM_REQUESTS; i++) {
+        printf("%d ", tracks[i]);
+    }
+    printf("\n");
+
+    qsort(tracks, NUM_REQUESTS, sizeof(int), compare);
+
+    for (int i = 0; i < NUM_REQUESTS; i++) {
+        if (tracks[i] >= head) {
+            break;
+        }
+    }
+
+    int index = i;
+
+    for (int i = index; i < NUM_REQUESTS; i++) {
+        total_movement += abs(head - tracks[i]);
+        head = tracks[i];
+        printf("Servicing Track %d\n", head);
+    }
+
+    total_movement += (head - 0);
+    head = 0;
+
+    for (int i = 0; i < index; i++) {
+        total_movement += abs(head - tracks[i]);
+        head = tracks[i];
+        printf("Servicing Track %d\n", head);
+    }
+
+    printf("Total Head Movement: %d\n", total_movement);
+    printf("Average Head Movement: %f\n", (float)total_movement / NUM_REQUESTS);
+
+    return 0;
+}
