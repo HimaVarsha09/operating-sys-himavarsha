@@ -1,0 +1,30 @@
+@@ -0,0 +1,29 @@
+#include <stdio.h>
+#include <pthread.h>
+#include <semaphore.h>
+#define NUM_INSTANCES 4
+#define NUM_PROCESSES 4
+sem_t S;
+void *process(void *p) {
+    int id = *((int *)p);
+    printf("Process %d waiting on semaphore\n", id);
+    sem_wait(&S);
+    printf("Process %d acquired semaphore\n", id);
+    sem_post(&S);
+    printf("Process %d released semaphore\n", id);
+    return NULL;
+}
+int main() {
+    sem_init(&S, 0, NUM_INSTANCES);
+    pthread_t threads[NUM_PROCESSES];
+    int process_ids[NUM_PROCESSES];
+    for (int i = 0; i < NUM_PROCESSES; i++) {
+        process_ids[i] = i + 1;
+        pthread_create(&threads[i], NULL, process, &process_ids[i]);
+    }
+    for (int i = 0; i < NUM_PROCESSES; i++) {
+        pthread_join(threads[i], NULL);
+    }
+    sem_destroy(&S);
+    return 0;
+}
