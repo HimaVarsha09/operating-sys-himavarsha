@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+
+#define BLOCK_COUNT 16
+#define AVAILABLE_BLOCK_COUNT 9
+#define MIN_FILE_SIZE 1
+#define INODE_BLOCK_COUNT 8
+
+bool disk_allocation_table[BLOCK_COUNT] = {false};
+
+void allocate_contiguous_blocks(int start_block, int block_count) {
+    for (int i = start_block; i < start_block + block_count; i++) {
+        disk_allocation_table[i] = true;
+    }
+}
+
+int find_free_contiguous_blocks(int block_count) {
+    int free_block_start = -1;
+    int free_block_count = 0;
+    for (int i = INODE_BLOCK_COUNT; i < BLOCK_COUNT; i++) {
+        if (!disk_allocation_table[i]) {
+            if (free_block_count == 0) {
+                free_block_start = i;
+            }
+            free_block_count++;
+        } else {
+            free_block_count = 0;
+        }
+        if (free_block_count == block_count) {
+            break;
+        }
+    }
+    return free_block_count == block_count ? free_block_start : -1;
+}
+
+int main() {
+    int file_size;
+    printf("Enter the file size (in KB): ");
+    scanf("%d", &file_size);
+    if (file_size < MIN_FILE_SIZE) {
+        printf("Error: File size is too small\n");
+        return 1;
+    }
+    int block_count = (file_size + MIN_FILE_SIZE - 1) / MIN_FILE_SIZE;
+    int start_block = find_free_contiguous_blocks(block_count);
+    if (start_block == -1) {
+        printf("Error: Not enough contiguous blocks available\n");
+        return 1;
+    }
+    allocate_contiguous_blocks(start_block, block_count);
+    printf("Allocated %d blocks starting from block %d to the file\n", block_count, start_block);
+    return 0;
+}
