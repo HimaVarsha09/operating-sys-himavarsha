@@ -1,0 +1,30 @@
+#include <stdio.h>
+#define MAX_TRACKS 200
+#define NUM_REQUESTS 5
+int tracks[NUM_REQUESTS] = {55, 58, 60, 70, 18};
+int main() {
+    int head = 55;
+    int total_movement = 0;
+    printf("Track Position: ");
+    for (int i = 0; i < NUM_REQUESTS; i++) {
+        printf("%d ", tracks[i]);
+    }
+    printf("\n");
+
+    for (int i = 0; i < NUM_REQUESTS; i++) {
+        total_movement += abs(head - tracks[i]);
+        head = tracks[i];
+        printf("Servicing Track %d\n", head);
+    }
+    total_movement += (MAX_TRACKS - head);
+    head = 0;
+    for (int i = 0; i < NUM_REQUESTS; i++) {
+        total_movement += abs(head - tracks[i]);
+        head = tracks[i];
+        printf("Servicing Track %d\n", head);
+    }
+    int avg_movement = total_movement / NUM_REQUESTS;
+    printf("Average Head Movement: %d\n", avg_movement);
+    return 0;
+}
+
